@@ -1,3 +1,5 @@
 /gFIT_auth/client_secret.json
 /gFIT_auth/refresh_token.txt
 /Examples/
+/build/
+/dist/
