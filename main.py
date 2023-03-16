@@ -4,12 +4,13 @@ import json
 import others.my_files as my_files
 import random
 from others.ColoredCommandLine import ColoredCommandLine as Ccl
+import sys
+import os
 
 # Get client_secret file from google API console at: https://console.developers.google.com/apis/credentials
 # Get refresh token from method GoogleFit.get_refresh_token(CLIENT_SECRET_FILE)
 CLIENT_SECRET_FILE = "gFIT_auth/client_secret.json"
 REFRESH_TOKEN_FILE = "gFIT_auth/refresh_token.txt"
-
 
 if __name__ == "__main__":
     print(f"{Ccl.GREEN.value}*** gFIT steps generator was started ***{Ccl.WHITE.value}")
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     secret_file = json.loads(my_files.read_file(CLIENT_SECRET_FILE))
 
     print("Starting data transfer with Google Fit server ...")
-    # create GoogleFit object and get access token
+    # create GoogleFit object and get access token + data stream id
     gf = GoogleFit(secret_file, gf_refresh_token)
 
     # prepare actual date
@@ -51,10 +52,11 @@ if __name__ == "__main__":
         req_date -= timedelta(days=1)
 
     # test only
-    req_date = datetime(year=2022, month=9, day=1, hour=5)
+    req_date = datetime(year=2022, month=9, day=2, hour=5)
     data = gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=1000)
     my_files.write_json("data.json", data)
 
     # Done
     print(f"\n{Ccl.GREEN.value}*** DONE ***")
     print(f"{steps_total} steps have been added in total :-)")
+    input("Press Enter to EXIT")
