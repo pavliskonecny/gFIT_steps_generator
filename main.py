@@ -19,15 +19,17 @@ def write_data(data=None):
 
 
 if __name__ == "__main__":
-    print("Getting access to Google Fit account ...")
+    print("gFIT steps generator was started ...")
     # get refresh token
     if not my_files.exist_file(REFRESH_TOKEN_FILE):
+        print("Getting access to Google Fit account ...")
         # Not necessary get refresh token every time. Just in case of reauthorization or change SCOPES
         gf_refresh_token = GoogleFit.get_refresh_token(CLIENT_SECRET_FILE)
         my_files.write_file(REFRESH_TOKEN_FILE, gf_refresh_token)
     else:
         gf_refresh_token = my_files.read_file(REFRESH_TOKEN_FILE)
 
+    # create GoogleFit object
     gf = GoogleFit(CLIENT_SECRET_FILE, gf_refresh_token)
 
     print("Starting data transfer with Google Fit server ...\n")
@@ -38,8 +40,8 @@ if __name__ == "__main__":
     # print("Reading steps ...")
     # data = gf.get_steps(start_time=start_time, end_time=end_time)
 
-    print(f"{ccl.YELLOW.value}Generating {steps} steps for date {start_time}")
+    print(f"{ccl.BLUE.value}Generating {steps} steps for date {start_time}")
     data = gf.set_steps(start_time=start_time, end_time=end_time, steps=steps)
     write_data(data)
 
-    print(f"\n{ccl.BLUE.value} *** DONE ***")
+    print(f"\n{ccl.GREEN.value}*** DONE ***")
