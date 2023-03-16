@@ -16,7 +16,7 @@ add_folder_name = "gFIT_auth"
 
 gui_app = False              # False will take console app, True will take GUI app
 
-one_file = False             # True means one exe file. False means folder with necessary files and exe file
+one_file = True             # True means one exe file. False means folder with necessary files and exe file
 
 # ******************************************************
 
