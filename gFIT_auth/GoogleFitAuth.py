@@ -8,7 +8,7 @@ class GoogleFitAuth:
     """
     # Additional scopes to apply when generating the refresh token
     # Check all available scopes at https://developers.google.com/fit/rest/v1/reference/users/dataSources/datasets/get
-    _SCOPES = "https://www.googleapis.com/auth/fitness.activity.read", \
+    _SCOPES = "https://www.googleapis.com/auth/fitness.activity.read",\
         "https://www.googleapis.com/auth/fitness.location.read", \
         "https://www.googleapis.com/auth/fitness.body.read", \
         "https://www.googleapis.com/auth/fitness.activity.write"

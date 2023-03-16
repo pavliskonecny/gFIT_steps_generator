@@ -10,9 +10,16 @@ class GoogleFit:
 
     def __init__(self, client_secret_file: dict, refresh_token: str):
         # client_secret_file -> Credentials from the Google Developers Console
-        self._ACCESS_TOKEN = GoogleFitAuth.get_access_token(client_secret_file, refresh_token)
-        if not self._ACCESS_TOKEN.startswith("ya29."):
-            raise Exception(f"It wasn't possible to get access token:\n{self._ACCESS_TOKEN}")
+        access_token = GoogleFitAuth.get_access_token(client_secret_file, refresh_token)
+        if not access_token.startswith("ya29."):
+            raise Exception(f"It wasn't possible to get access token:\n{access_token}")
+        self._ACCESS_TOKEN = access_token
+
+        # get data stream id
+        ok, data_stream_id = self._get_data_stream_id()
+        if not ok:
+            raise Exception(f"It wasn't possible to get data stream id:\n{data_stream_id}")
+        self._DATA_STREAM_ID = data_stream_id
 
     @staticmethod
     def get_refresh_token(client_secret_file_name: str):
@@ -65,11 +72,7 @@ class GoogleFit:
         end_time_milli = GoogleFit.human_to_milli(end_time)
         one_mill = 1000000
 
-        ok, data_stream_id = self.get_data_stream_id()
-        if not ok:
-            raise Exception(f"Not possible to get data stream id:\n{data_stream_id}")
-
-        url = f"https://www.googleapis.com/fitness/v1/users/me/dataSources/{data_stream_id}/datasets/{start_time_milli}-{end_time_milli}"
+        url = f"https://www.googleapis.com/fitness/v1/users/me/dataSources/{self._DATA_STREAM_ID}/datasets/{start_time_milli}-{end_time_milli}"
 
         headers = {
             "Authorization": f"Bearer {self._ACCESS_TOKEN}",
@@ -77,7 +80,7 @@ class GoogleFit:
         }
 
         data = {
-            "dataSourceId": data_stream_id,
+            "dataSourceId": self._DATA_STREAM_ID,
             "maxEndTimeNs": end_time_milli * one_mill,
             "minStartTimeNs": start_time_milli * one_mill,
             "point": [
@@ -102,7 +105,7 @@ class GoogleFit:
             raise Exception(f"Not possible to set steps - wrong result\n{response.text}")
         return response.json()  # return json.loads(response.text)
 
-    def get_data_stream_id(self) -> Tuple[bool, str]:
+    def _get_data_stream_id(self) -> Tuple[bool, str]:
         """
             data_stream_id example:
             "derived:com.google.step_count.delta:1099052750196:Example Manufacturer:ExampleTablet:1000001:MyDataSource"
