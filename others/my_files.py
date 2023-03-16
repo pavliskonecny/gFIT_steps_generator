@@ -96,7 +96,7 @@ def make_dir(directory_name: str) -> bool:
     return False
 
 
-def _write_json(json_file_name: str, data: object):
+def write_json(json_file_name: str, data: object):
     try:
         j_data = json.dumps(data, ensure_ascii=False, indent=2)
         write_file(json_file_name, j_data)
@@ -104,7 +104,7 @@ def _write_json(json_file_name: str, data: object):
         raise SyntaxError("JSON writing error: " + str(ex))
 
 
-def _read_json(json_file_name: str) -> str:
+def read_json(json_file_name: str) -> str:
     try:
         j_data = json.loads(read_file(json_file_name))
         return j_data

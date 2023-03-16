@@ -7,15 +7,8 @@ from others.ColoredCommandLine import ColoredCommandLine as Ccl
 
 # Get client_secret file from google API console at: https://console.developers.google.com/apis/credentials
 # Get refresh token from method GoogleFit.get_refresh_token(CLIENT_SECRET_FILE)
-CLIENT_SECRET_FILE = "auth/client_secret.json"
-REFRESH_TOKEN_FILE = "auth/refresh_token.txt"
-
-
-def write_data(data=None):
-    j_son = json.dumps(data, ensure_ascii=False, indent=2)
-    name = "data.json"
-    with open(name, mode='w') as outfile:
-        print(j_son, file=outfile)
+CLIENT_SECRET_FILE = "gFIT_auth/client_secret.json"
+REFRESH_TOKEN_FILE = "gFIT_auth/refresh_token.txt"
 
 
 if __name__ == "__main__":
@@ -45,7 +38,7 @@ if __name__ == "__main__":
 
     # read steps
     # data = gf.get_steps(start_time=req_date, end_time=req_date + timedelta(hours=1))
-    # write_data(data)
+    # my_files.write_json("data.json", data)
 
     # Generate steps for every day in this month
     print("Starting generating of steps ...")
@@ -60,7 +53,7 @@ if __name__ == "__main__":
     # test only
     req_date = datetime(year=2022, month=9, day=1, hour=5)
     data = gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=1000)
-    write_data(data)
+    my_files.write_json("data.json", data)
 
     # Done
     print(f"\n{Ccl.GREEN.value}*** DONE ***")
