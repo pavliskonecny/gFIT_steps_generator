@@ -1,9 +1,9 @@
 from gFit import GoogleFit
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import others.my_files as my_files
 import random
-from others.ColoredCommandLine import ColoredCommandLine as ccl
+from others.ColoredCommandLine import ColoredCommandLine as Ccl
 
 # Get client_secret file from google API console at: https://console.developers.google.com/apis/credentials
 # Get refresh token from method GoogleFit.get_refresh_token(CLIENT_SECRET_FILE)
@@ -19,7 +19,8 @@ def write_data(data=None):
 
 
 if __name__ == "__main__":
-    print("gFIT steps generator was started ...")
+    print(f"{Ccl.GREEN.value}*** gFIT steps generator was started ***{Ccl.WHITE.value}")
+
     # get refresh token
     if not my_files.exist_file(REFRESH_TOKEN_FILE):
         print("Getting access to Google Fit account ...")
@@ -29,19 +30,38 @@ if __name__ == "__main__":
     else:
         gf_refresh_token = my_files.read_file(REFRESH_TOKEN_FILE)
 
-    # create GoogleFit object
-    gf = GoogleFit(CLIENT_SECRET_FILE, gf_refresh_token)
+    # get client secret file
+    secret_file = json.loads(my_files.read_file(CLIENT_SECRET_FILE))
 
-    print("Starting data transfer with Google Fit server ...\n")
-    start_time = datetime(year=2022, month=9, day=1, hour=5)
-    end_time = datetime(year=2022, month=9, day=1, hour=6)
-    steps = random.randint(2500, 3000)
+    print("Starting data transfer with Google Fit server ...")
+    # create GoogleFit object and get access token
+    gf = GoogleFit(secret_file, gf_refresh_token)
 
-    # print("Reading steps ...")
-    # data = gf.get_steps(start_time=start_time, end_time=end_time)
+    # prepare actual date
+    now = datetime.now()
+    req_date = datetime(year=now.year, month=now.month, day=now.day, hour=5)
+    if req_date >= now:
+        req_date -= timedelta(days=1)
 
-    print(f"{ccl.BLUE.value}Generating {steps} steps for date {start_time}")
-    data = gf.set_steps(start_time=start_time, end_time=end_time, steps=steps)
+    # read steps
+    # data = gf.get_steps(start_time=req_date, end_time=req_date + timedelta(hours=1))
+    # write_data(data)
+
+    # Generate steps for every day in this month
+    print("Starting generating of steps ...")
+    steps_total = 0
+    while req_date.month == now.month:
+        steps = random.randint(2500, 3000)
+        steps_total += steps
+        print(f"{Ccl.BLUE.value}Generating {steps} steps for date {req_date}")
+        # gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=steps)
+        req_date -= timedelta(days=1)
+
+    # test only
+    req_date = datetime(year=2022, month=9, day=1, hour=5)
+    data = gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=1000)
     write_data(data)
 
-    print(f"\n{ccl.GREEN.value}*** DONE ***")
+    # Done
+    print(f"\n{Ccl.GREEN.value}*** DONE ***")
+    print(f"{steps_total} steps have been added in total :-)")
