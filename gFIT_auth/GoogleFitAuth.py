@@ -5,6 +5,7 @@ import requests
 class GoogleFitAuth:
     """
     To start playing with Google Fit API visit: https://developers.google.com/fit/rest/v1/get-started
+    Good explanation is at: https://github.com/googleapis/google-api-python-client/blob/main/docs/oauth-installed.md
     """
     # Additional scopes to apply when generating the refresh token
     # Check all available scopes at https://developers.google.com/fit/rest/v1/reference/users/dataSources/datasets/get
@@ -31,13 +32,13 @@ class GoogleFitAuth:
         }
         flow = InstalledAppFlow.from_client_config(client_config, GoogleFitAuth._SCOPES)
         flow.run_local_server(host='localhost', port=8080,
-                              authorization_prompt_message='Please visit this URL: {url}',
+                              authorization_prompt_message='Please visit this URL:\n{url}',
                               success_message='The auth flow is complete; you may close this window.',
                               open_browser=False)
 
-        print("Access token: %s" % flow.credentials.token)
+        print(f"Access token: {flow.credentials.token}")
         refresh_token = flow.credentials.refresh_token
-        print('\033[94m' + "GOOGLE FIT API REFRESH TOKEN: %s" % refresh_token + '\033[0m')
+        print(f"GOOGLE FIT API REFRESH TOKEN: refresh_token")
         return refresh_token
 
     @staticmethod
@@ -55,7 +56,6 @@ class GoogleFitAuth:
                                             open_browser=False)
         access_token = credentials.token  # also in flow.credentials.token
         refresh_token = credentials.refresh_token  # also in flow.credentials.refresh_token
-        print(f"\033[94m GOOGLE FIT API REFRESH TOKEN: {refresh_token} \033[0m")
         return refresh_token
 
     @staticmethod

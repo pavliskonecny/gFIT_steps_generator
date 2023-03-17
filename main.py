@@ -3,17 +3,19 @@ from datetime import datetime, timedelta
 import json
 import others.my_files as my_files
 import random
-from others.ColoredCommandLine import ColoredCommandLine as Ccl
+from colorama import init, Fore
+#from others.ColoredCommandLine import ColoredCommandLine as Ccl
 import sys
 import os
 
 # Get client_secret file from google API console at: https://console.developers.google.com/apis/credentials
 # Get refresh token from method GoogleFit.get_refresh_token(CLIENT_SECRET_FILE)
-CLIENT_SECRET_FILE = "gFIT_auth/client_secret.json"
-REFRESH_TOKEN_FILE = "gFIT_auth/refresh_token.txt"
+CLIENT_SECRET_FILE = f"{my_files.get_internal_path()}\\gFIT_auth\\client_secret.json"
+REFRESH_TOKEN_FILE = f"{my_files.get_external_path()}\\refresh_token.txt"
 
 if __name__ == "__main__":
-    print(f"{Ccl.GREEN.value}*** gFIT steps generator was started ***{Ccl.WHITE.value}")
+    init()  # colorama
+    print(f"{Fore.GREEN}*** gFIT steps generator was started ***{Fore.RESET}")
 
     # get refresh token
     if not my_files.exist_file(REFRESH_TOKEN_FILE):
@@ -42,21 +44,20 @@ if __name__ == "__main__":
     # my_files.write_json("data.json", data)
 
     # Generate steps for every day in this month
-    print("Starting generating of steps ...")
+    print("Starting generating of steps ...\n")
     steps_total = 0
     while req_date.month == now.month:
-        steps = random.randint(2500, 3000)
+        steps = random.randint(2500, 3100)
         steps_total += steps
-        print(f"{Ccl.BLUE.value}Generating {steps} steps for date {req_date}")
-        # gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=steps)
+        print(f"{Fore.LIGHTBLUE_EX}Generating {steps} steps for date {req_date}")
+        gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=steps)
         req_date -= timedelta(days=1)
 
     # test only
-    req_date = datetime(year=2022, month=9, day=2, hour=5)
-    data = gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=1000)
-    my_files.write_json("data.json", data)
+    # req_date = datetime(year=2023, month=3, day=1, hour=5)
+    # data = gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=2000)
+    # my_files.write_json("data.json", data)
 
     # Done
-    print(f"\n{Ccl.GREEN.value}*** DONE ***")
-    print(f"{steps_total} steps have been added in total :-)")
+    print(f"\n{Fore.GREEN}*** DONE ***\n{steps_total} steps have been added in total :-){Fore.RESET}")
     input("Press Enter to EXIT")

@@ -1,7 +1,7 @@
 import os
 import sys
 import json
-
+from pathlib import Path
 
 def read_file(f_name: str) -> str:
     """
@@ -128,3 +128,28 @@ def get_drive_from_path(file_path: str) -> str:
     drive_tail = os.path.splitdrive(file_path)
     return drive_tail[0]    # Like - C:
     # return drive_tail[1]  # Like - \User\Documents\file.txt
+
+
+def get_internal_path() -> str:
+    """
+    :return: Return internal path of actual executed file
+    In case of exe file return e.g. C:\\Temp\\_MEI36202
+    In case of PyCharm return e. g. C:\\Users\\konepa1\\PycharmProjects\\gFIT_steps_generator
+    get_internal_path + get_external_path will have the same result in case of PyCharm
+    """
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def get_external_path() -> str:
+    """
+    :return: Return external path of actual executed file
+    In case of exe file return e.g. C:\\Users\\konepa1\\Desktop
+    In case of PyCharm return e. g. C:\\Users\\konepa1\\PycharmProjects\\gFIT_steps_generator
+    get_internal_path + get_external_path will have the same result in case of PyCharm
+    """
+    if getattr(sys, 'frozen', False):
+        # one-file execution file folder
+        return str(os.path.abspath(os.curdir))
+    else:
+        # PyCharm development folder
+        return str(os.path.abspath(os.curdir))
