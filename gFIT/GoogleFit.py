@@ -3,7 +3,7 @@ import json
 import time
 import datetime
 from typing import Tuple
-from gFIT_auth.GoogleFitAuth import GoogleFitAuth
+from gFIT.GoogleFitAuth import GoogleFitAuth
 
 
 class GoogleFit:

@@ -1,20 +1,17 @@
-from gFit import GoogleFit
+from gFIT.GoogleFit import GoogleFit
 from datetime import datetime, timedelta
 import json
-import others.my_files as my_files
+from mytoolbox import my_files
 import random
-from colorama import init, Fore
-#from others.ColoredCommandLine import ColoredCommandLine as Ccl
-import sys
-import os
+from colorama import init as colorama_init, Fore
 
 # Get client_secret file from google API console at: https://console.developers.google.com/apis/credentials
 # Get refresh token from method GoogleFit.get_refresh_token(CLIENT_SECRET_FILE)
-CLIENT_SECRET_FILE = f"{my_files.get_internal_path()}\\gFIT_auth\\client_secret.json"
+CLIENT_SECRET_FILE = f"{my_files.get_internal_path()}\\gFIT\\client_secret.json"
 REFRESH_TOKEN_FILE = f"{my_files.get_external_path()}\\refresh_token.txt"
 
 if __name__ == "__main__":
-    init()  # colorama
+    colorama_init()
     print(f"{Fore.GREEN}*** gFIT steps generator was started ***{Fore.RESET}")
 
     # get refresh token
@@ -39,10 +36,6 @@ if __name__ == "__main__":
     if req_date >= now:
         req_date -= timedelta(days=1)
 
-    # read steps
-    # data = gf.get_steps(start_time=req_date, end_time=req_date + timedelta(hours=1))
-    # my_files.write_json("data.json", data)
-
     # Generate steps for every day in this month
     print("Starting generating of steps ...\n")
     steps_total = 0
@@ -53,11 +46,12 @@ if __name__ == "__main__":
         gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=steps)
         req_date -= timedelta(days=1)
 
-    # test only
-    # req_date = datetime(year=2023, month=3, day=1, hour=5)
-    # data = gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=2000)
-    # my_files.write_json("data.json", data)
-
     # Done
     print(f"\n{Fore.GREEN}*** DONE ***\n{steps_total} steps have been added in total :-){Fore.RESET}")
     input("Press Enter to EXIT")
+
+    # TEST ONLY
+    # req_date = datetime(year=2022, month=8, day=1, hour=5)
+    # data = gf.get_steps(start_time=req_date, end_time=req_date + timedelta(hours=1))  # read steps
+    # data = gf.set_steps(start_time=req_date, end_time=req_date + timedelta(hours=1), steps=2000)  # write steps
+    # my_files.write_json("data.json", data)
